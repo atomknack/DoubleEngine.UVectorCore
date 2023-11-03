@@ -1,0 +1,28 @@
+<#/*THIS IS A T4 INCLUDE FILE*/#>
+using Newtonsoft.Json;
+
+namespace <#=globalNamespaceName#>
+{
+	[System.Serializable]	
+    <#=publicReadonly#> partial struct <#=typeName#>
+    {
+<# foreach (var f in fieldNames) { #>
+		<#=publicReadonly#> <#=b.type#> <#=f#>;
+<# } #>
+
+		[JsonConstructor]
+		public <#=typeName#>(<#=String.Join(", ",fieldNames.Select((x,i)=> $"{b.type} {x} = {defaultValues[i]}"))#>)
+		{
+<# foreach (var f in fieldNames) { #>
+			this.<#=f#> = <#=f#>;
+<# } #>
+		}
+
+		public void Deconstruct(<#=String.Join(", ",fieldNames.Select((x,i)=> $"out {b.type} {x}"))#>)
+		{
+<# foreach (var f in fieldNames) { #>
+			<#=f#> = this.<#=f#>;
+<# } #>
+		}
+	}
+}

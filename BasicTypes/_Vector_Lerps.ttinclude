@@ -1,0 +1,18 @@
+<#/*THIS IS A T4 INCLUDE FILE*/#>
+using System;
+using System.Runtime.CompilerServices;
+
+namespace <#=globalNamespaceName#>
+{
+
+<#=publicReadonly#> partial struct <#=typeName#>
+{
+    <#=aInline1CRLF4s#><#=publicStatic#> <#=typeName#> Lerp(<#=typeName#> from, <#=typeName#> to, <#=b.type#> amount) =>
+            LerpUnclamped(from, to, Math.Clamp(amount, 0d, 1d));
+    <#=aInline1CRLF4s#><#=publicStatic#> <#=typeName#> LerpUnclamped(<#=typeName#> from, <#=typeName#> to, <#=b.type#> amount)
+    {
+         return (from*(1d-amount))+(to*amount);
+    }
+}
+
+}

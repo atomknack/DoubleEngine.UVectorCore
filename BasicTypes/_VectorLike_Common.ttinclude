@@ -1,0 +1,32 @@
+<#/*THIS IS A T4 INCLUDE FILE*/#>
+using System;
+using System.Runtime.CompilerServices;
+
+namespace <#=globalNamespaceName#>
+{
+
+<#=publicReadonly#> partial struct <#=typeName#> : IFormattable
+{
+    <#=aInline1CRLF4s#><#=publicReadonly#> <#=b.type#> MagnitudeSqr()
+    {
+         return <#=String.Join(" + ",fieldNames.Select(x=> $"{x} * {x}"))#>;
+    }
+    <#=aInline1CRLF4s#><#=publicStatic#> <#=b.type#> Dot(in <#=typeName#> a, in <#=typeName#> b)
+    {
+        return <#=String.Join(" + ",fieldNames.Select(x=> $"a.{x} * b.{x}"))#>;
+    }
+
+    <#=publicReadonly#> override string ToString() => 
+            $"(<#=String.Join(", ",fieldNames.Select(x=> $"{{CommonHelpers.ToStringWithDot({x}, \"F2\")}}"))#>)";
+<#            //$"({CommonHelpers.toStringWithDot(x, "F2")}, {CommonHelpers.toStringWithDot(y, "F2")}, {CommonHelpers.toStringWithDot(z, "F2")})";#>
+    <#=publicReadonly#> string ToString(string format) => 
+            $"(<#=String.Join(", ",fieldNames.Select(x=> $"{{CommonHelpers.ToStringWithDot({x}, format)}}"))#>)";
+<#            //$"({CommonHelpers.toStringWithDot(x, format)}, {CommonHelpers.toStringWithDot(y, format)}, {CommonHelpers.toStringWithDot(z, format)})";#>
+    <#=publicReadonly#> string ToString(string format, IFormatProvider formatProvider) => 
+            $"(<#=String.Join(", ",fieldNames.Select(x=> $"{{CommonHelpers.ToStringWithDot({x}, format, formatProvider)}}"))#>)";
+<#            //$"({CommonHelpers.toStringWithDot(x, format, formatProvider)}, {CommonHelpers.toStringWithDot(y, format, formatProvider)}, {CommonHelpers.toStringWithDot(z, format, formatProvider)})";#>
+
+
+}
+
+}

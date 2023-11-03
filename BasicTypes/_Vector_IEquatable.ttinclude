@@ -1,0 +1,48 @@
+<#/*THIS IS A T4 INCLUDE FILE*/#>
+using System;
+
+namespace <#=globalNamespaceName#>
+{
+    <#=publicReadonly#> partial struct <#=typeName#> : IEquatable<<#=typeName#>>
+    {
+<# if (b.type == "int") { #>
+        <#=publicReadonly#> bool Equals(<#=typeName#> other) => <#=String.Join(" && ",fieldNames.Select(x=> $"{x} == other.{x}"))#>;
+        <#=publicStatic#> bool operator !=(in <#=typeName#> lhs, in <#=typeName#> rhs)=> !(lhs == rhs);
+        <#=publicStatic#> bool operator ==(in <#=typeName#> lhs, in <#=typeName#> rhs)=> lhs.Equals(rhs);
+<# } else { #>
+        <#=publicReadonly#> bool Equals(<#=typeName#> other)
+        {
+			//return <#=String.Join(" && ",fieldNames.Select(x=> $"{x} == other.{x}"))#>;
+            return SpecialEquality(this, other);
+        }
+        
+        <#=publicStatic#> bool operator !=(in <#=typeName#> lhs, in <#=typeName#> rhs)=> !(lhs == rhs);
+        <#=publicStatic#> bool operator ==(in <#=typeName#> lhs, in <#=typeName#> rhs)=> SpecialEquality(lhs, rhs);
+		<#=publicStatic#> bool SpecialEquality(in <#=typeName#> lhs, in <#=typeName#> rhs)
+        {
+<# foreach (var f in fieldNames) { #>
+			double <#=f#>Diff = lhs.<#=f#> - rhs.<#=f#>;
+<# 	} // end foreach #>
+            return <#=String.Join(" + ",fieldNames.Select(x=> $"{x}Diff *{x}Diff"))#><1e-26;
+        }
+<# } // end if (b.type == "int") #>
+        <#=publicReadonly#> override int GetHashCode()
+        {
+            int hash = 5903;
+<# foreach (var f in fieldNames) { #>
+			hash = ((hash << <#=hashShift#>) ^ hash) ^ <#=f#>.GetHashCode();
+<# 	} #>
+            return hash;
+        }
+        <#=publicReadonly#> override bool Equals(object other)
+        {
+            if (!(other is <#=typeName#>))
+            {
+                return false;
+            }
+            return Equals((<#=typeName#>)other);
+        }
+
+
+    }
+}

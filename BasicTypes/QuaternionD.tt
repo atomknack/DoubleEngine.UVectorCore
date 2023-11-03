@@ -1,0 +1,109 @@
+<#@ template language="C#" hostspecific="True"#>
+<#@ output extension=".gen.cs" #>
+<#@ include file="$(ProjectDir)\_Include\_0_AssemplyImports.ttinclude" #>
+<#@ include file="$(ProjectDir)\_Include\_2_GlobalTTInclude.ttinclude" #>
+<#@ include file="$(ProjectDir)\_Include\_8_QuaternionD_type.ttinclude" #>
+using System;
+
+namespace <#=globalNamespaceName#>
+{
+    <#=publicReadonly#> partial struct <#=typeName#>
+    {
+		<#=publicReadonly#> static QuaternionD identity = new QuaternionD(0, 0, 0, 1<#=b.valueEnding#>);
+
+		<#=publicStatic#> bool IsEqualOrFlippedEqual(QuaternionD a, QuaternionD b, <#=b.type#> epsilon = 1e-7<#=b.valueEnding#>) //need to be tested that it works in separate test 
+        {
+			if (<#=math["Abs"]#>(a.x - b.x) < epsilon && <#=math["Abs"]#>(a.y - b.y) < epsilon && <#=math["Abs"]#>(a.z - b.z) < epsilon && <#=math["Abs"]#>(a.w - b.w) < epsilon)
+				return true;
+			if (<#=math["Abs"]#>(a.x + b.x) < epsilon && <#=math["Abs"]#>(a.y + b.y) < epsilon && <#=math["Abs"]#>(a.z + b.z) < epsilon && <#=math["Abs"]#>(a.w + b.w) < epsilon)
+				return true;
+			return false;
+		}
+		<#=publicReadonly#> <#=typeName#> Inversed() => new QuaternionD(-x, -y, -z, w);
+		
+		<#=publicReadonly#> double Angle(<#=typeName#> other) => Angle(this, other);
+		<#=publicStatic#> double Angle(<#=typeName#> a, <#=typeName#> b) =>
+			MathU.HalfRadiansToDegrees(Math.Acos(Math.Min(Math.Abs(Dot(a, b)), 1<#=b.valueEnding#>)));
+
+		/// <inheritdoc cref = "ToAngleAxisHalfRadians" />
+		<#=publicReadonly#> (<#=b.type#> angle, Vec3D axis) ToAngleAxisDegrees()
+		{
+			(<#=b.type#> angle, Vec3D axis) = ToAngleAxisHalfRadians();
+			return (MathU.HalfRadiansToDegrees(angle), axis);
+		}
+		/// <inheritdoc cref = "ToAngleAxisHalfRadians" />
+		<#=publicReadonly#> (<#=b.type#> angle, Vec3D axis) ToAngleAxisRadians()
+		{
+			(<#=b.type#> angle, Vec3D axis) = ToAngleAxisHalfRadians();
+			return (angle * 2<#=b.valueEnding#>, axis);
+		}
+		/// <summary>Quaternion to Angle and Axis</summary>
+		/// <remarks> if Quaternion is at singularity position return Vec3D.right as vector</remarks>
+		/// <inheritdoc />
+		<#=publicReadonly#> (<#=b.type#> angle, Vec3D axis) ToAngleAxisHalfRadians()
+        {
+			<#=b.type#> MINS = 1E-7<#=b.valueEnding#>;
+			<#=b.type#> s =Math.Sqrt(1 - w * w);
+			if (s < MINS)
+				return (Math.Acos(w),Vec3D.right); //return (Math.Acos(w), new Vec3D(x, y, z));
+			return (Math.Acos(w), new Vec3D(x / s, y / s, z / s));
+		}
+		<#=publicStatic#> <#=typeName#> operator *(<#=typeName#> lhs, <#=typeName#> rhs) => HamiltonProduct(lhs, rhs);
+		<#=publicStatic#> <#=typeName#> HamiltonProduct(<#=typeName#> lhs, <#=typeName#> rhs) => new <#=typeName#>(
+				lhs.w * rhs.x + lhs.x * rhs.w + lhs.y * rhs.z - lhs.z * rhs.y,
+				lhs.w * rhs.y + lhs.y * rhs.w + lhs.z * rhs.x - lhs.x * rhs.z,
+				lhs.w * rhs.z + lhs.z * rhs.w + lhs.x * rhs.y - lhs.y * rhs.x,
+				lhs.w * rhs.w - lhs.x * rhs.x - lhs.y * rhs.y - lhs.z * rhs.z);
+
+///Use this only if you need rotate only one Vector by Quaternion once, 
+///because it equal to:
+///1 creation of rotation matrix, 
+///2 rotate vector by matrix
+///3 discard created matrix
+		<#=publicStatic#> Vec3D operator *(<#=typeName#> rotation, Vec3D vec) => rotation.Rotate(vec);
+		<#=publicReadonly#> Vec3D Rotate(Vec3D vec)
+        {
+			<#=b.type#> x2 = x * 2<#=b.valueEnding#>;  <#=b.type#> y2 = y * 2<#=b.valueEnding#>;  <#=b.type#> z2 = z * 2<#=b.valueEnding#>;
+			<#=b.type#> xx2 = x * x2; <#=b.type#> yy2 = y * y2; <#=b.type#> zz2 = z * z2;
+			<#=b.type#> xy2 = x * y2; <#=b.type#> xz2 = x * z2; <#=b.type#> yz2 = y * z2;
+			<#=b.type#> wx2 = w * x2; <#=b.type#> wy2 = w * y2; <#=b.type#> wz2 = w * z2;
+			return new Vec3D(
+(1<#=b.valueEnding#> - (yy2 + zz2)) * vec.x + (xy2 - wz2) * vec.y +        (xz2 + wy2) * vec.z,
+(xy2 + wz2) * vec.x +        (1<#=b.valueEnding#> - (xx2 + zz2)) * vec.y + (yz2 - wx2) * vec.z,
+(xz2 - wy2) * vec.x +        (yz2 + wx2) * vec.y +        (1<#=b.valueEnding#> - (xx2 + yy2)) * vec.z
+				);
+		}
+
+		<#=publicReadonly#> void RotateInPlace(Vec3D[] rotateInPlace) // need testing
+		{
+			Span<Vec3D> span = new Span<Vec3D>(rotateInPlace);
+			Rotate(span, span);
+		}
+		<#=publicReadonly#> Vec3D[] Rotate(Vec3D[] toRotate) // need testing
+		{
+			Vec3D[] newArray = new Vec3D[toRotate.Length];
+			Rotate(new ReadOnlySpan<Vec3D>(toRotate), new Span<Vec3D>(newArray));
+			return newArray;
+		}
+		<#=publicReadonly#> void Rotate(ReadOnlySpan<Vec3D> vIn, Span<Vec3D> vOut) // need testing
+        {
+			if(vIn.Length>vOut.Length)
+				throw new ArgumentException("vIn Length should not be bigger than vOut Length");
+			<#=b.type#> x2 = x * 2<#=b.valueEnding#>;  <#=b.type#> y2 = y * 2<#=b.valueEnding#>;  <#=b.type#> z2 = z * 2<#=b.valueEnding#>;
+			<#=b.type#> xx2 = x * x2; <#=b.type#> yy2 = y * y2; <#=b.type#> zz2 = z * z2;
+			<#=b.type#> xy2 = x * y2; <#=b.type#> xz2 = x * z2; <#=b.type#> yz2 = y * z2;
+			<#=b.type#> wx2 = w * x2; <#=b.type#> wy2 = w * y2; <#=b.type#> wz2 = w * z2;
+			for (int i = 0; i<vIn.Length; i++)
+				{
+				Vec3D vec = vIn[i];
+				vOut[i] = new Vec3D(
+(1<#=b.valueEnding#> - (yy2 + zz2)) * vec.x + (xy2 - wz2) * vec.y +        (xz2 + wy2) * vec.z,
+(xy2 + wz2) * vec.x +        (1<#=b.valueEnding#> - (xx2 + zz2)) * vec.y + (yz2 - wx2) * vec.z,
+(xz2 - wy2) * vec.x +        (yz2 + wx2) * vec.y +        (1<#=b.valueEnding#> - (xx2 + yy2)) * vec.z
+				);
+				}
+		}
+		
+	}
+
+}

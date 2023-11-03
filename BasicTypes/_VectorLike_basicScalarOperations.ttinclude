@@ -1,0 +1,45 @@
+<#/*THIS IS A T4 INCLUDE FILE*/#>
+
+<#@ include file="$(ProjectDir)\_Include\_InlineFunctions_ClassFeatures.ttinclude" #>
+using System;
+using System.Runtime.CompilerServices;
+
+namespace <#=globalNamespaceName#>
+{
+
+<#=publicReadonly#> partial struct <#=typeName#>
+{
+    <#=StaticVectorScalarMethod("operator +", "vector", "scalar", "+")#>
+    <#=aInline1CRLF4s#><#=publicStatic#> <#=typeName#> operator -(<#=inMod#><#=typeName#> vector) => new <#=typeName#> ( <#=String.Join(", ",fieldNames.Select(x=> $"-vector.{x}"))#> );
+    <#=StaticVectorScalarMethod("operator -", "vector", "scalar", "-")#>
+
+    
+    <#=StaticVectorScalarMethod("operator *", "vector", "scalar", "*")#>
+    <#=StaticVectorScalarMethod("Multiply", "vector", "scalar", "*")#>
+
+    <#=aInline1CRLF4s#><#=publicReadonly#> <#=typeName#> Multiplied(<#=b.type#> scalar) => <#=VectorScalarOperation("", "scalar", "*")#>
+    
+    <#=StaticVectorScalarMethod("operator /", "vector", "scalarDivider", "/")#>
+    <#=StaticVectorScalarMethod("Divide", "vector", "scalarDivider", "/")#>
+
+    <#=aInline1CRLF4s#><#=publicReadonly#> <#=typeName#> DividedBy(<#=b.type#> divider) => new <#=typeName#> ( <#=String.Join(", ",fieldNames.Select(x=> $"{x} / divider"))#> );
+
+    <#=StaticVectorScalarMethod("operator %", "vector", "scalarDivider", "%")#>
+    <#=StaticVectorScalarMethod("RemainderOfDivision", "vector", "scalarDivider", "%")#>
+    <#=aInline1CRLF4s#><#=publicReadonly#> <#=typeName#> RemainderOfDivision(<#=b.type#> divider) => new <#=typeName#> ( <#=String.Join(", ",fieldNames.Select(x=> $"{x} % divider"))#> );
+
+    /*
+    <#=StaticVectorVectorMethod("operator +", "lhs", "r", "+")#>
+    <#=StaticVectorVectorMethod("AddVect", "lhs", "r", "+")#>
+    <#=aInline1CRLF4s#><#=publicReadonly#> <#=typeName#> AddedVect(<#=inMod#><#=typeName#> vector) => <#=VectorVectorOperation("", "vector.", "+")#>
+    <#=StaticVectorVectorMethod("operator -", "lhs", "r", "-")#>
+    <#=StaticVectorVectorMethod("MultiplyVect", "lhs", "r", "*")#>
+    <#=aInline1CRLF4s#><#=publicReadonly#> <#=typeName#> MultipliedVect(<#=inMod#><#=typeName#> vector) => new <#=typeName#> ( <#=String.Join(", ",fieldNames.Select(x=> $"{x} * vector.{x}"))#> );
+    <#=StaticVectorVectorMethod("DivideVect", "vector", "divider", "/")#>
+    <#=aInline1CRLF4s#><#=publicReadonly#> <#=typeName#> DividedByVect(<#=inMod#><#=typeName#> divider) => new <#=typeName#> ( <#=String.Join(", ",fieldNames.Select(x=> $"{x} / divider.{x}"))#> );
+    <#=StaticVectorVectorMethod("RemainderOfDivisionVect", "vector", "divider", "%")#>
+    <#=aInline1CRLF4s#><#=publicReadonly#> <#=typeName#> RemainderOfDivisionVect(<#=inMod#><#=typeName#> divider) => new <#=typeName#> ( <#=String.Join(", ",fieldNames.Select(x=> $"{x} % divider.{x}"))#> );
+    */
+}
+
+}

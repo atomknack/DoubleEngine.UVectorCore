@@ -1,0 +1,36 @@
+<#/*THIS IS A T4 INCLUDE FILE*/#>
+using System;
+using System.Runtime.CompilerServices;
+
+namespace <#=globalNamespaceName#>
+{
+
+<#=publicReadonly#> partial struct <#=typeName#>
+{
+    <#=aInline1CRLF4s#>public readonly <#=b.type#> Magnitude()
+    {
+         return Math.Sqrt(MagnitudeSqr());
+    }
+    <#=aInline1CRLF4s#><#=publicReadonly#> <#=typeName#> Normalized()
+    {
+        <#=b.type#> mag = Magnitude();
+        if (mag < <#=epsilonNormalized#><#=b.valueEnding#>)
+            {
+                return identity;
+            }
+            return new <#=typeName#>(<#=String.Join(", ",fieldNames.Select(x=> $"{x} / mag"))#>);
+    }
+    <#=publicReadonly#> <#=typeName#> ClampedMagnitude(<#=b.type#> maxLength) //P
+        {
+            <#=b.type#> sqrMagnitude = MagnitudeSqr();
+            if (maxLength * maxLength >= sqrMagnitude)
+                return this;
+            if (sqrMagnitude <= <#=sqrEpsilonClampedMagnitude#><#=b.valueEnding#>) // test by Vec3D(0,0,0)
+                return this;
+            <#=b.type#> magnitude = Math.Sqrt(sqrMagnitude);
+            return DividedBy(magnitude).Multiplied(maxLength);
+        }
+
+}
+
+}

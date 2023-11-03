@@ -1,0 +1,40 @@
+﻿<#@ template language="C#" hostspecific="True"#>
+<#@ output extension=".gen.cs" #>
+<#@ include file="$(ProjectDir)\_Include\_0_AssemplyImports.ttinclude" #>
+<#@ include file="$(ProjectDir)\_Include\_2_GlobalTTInclude.ttinclude" #>
+<#@ include file="$(ProjectDir)\_Include\_8_QuaternionD_type.ttinclude" #>
+using System;
+
+namespace <#=globalNamespaceName#>
+{
+    <#=publicReadonly#> partial struct <#=typeName#>
+    {
+        public static <#=typeName#> Lerp(<#=typeName#> quaternion1, <#=typeName#> quaternion2, <#=b.type#> amount) =>
+            LerpUnclamped(quaternion1, quaternion2, Math.Clamp(amount, 0<#=b.valueEnding#>, 1<#=b.valueEnding#>));
+        public static QuaternionD LerpUnclamped(<#=typeName#> quaternion1, <#=typeName#> quaternion2, <#=b.type#> amount)
+		{
+			<#=b.type#> invAmount = 1<#=b.valueEnding#> - amount;
+			<#=b.type#> dot = Dot(quaternion1, quaternion2);
+			if (dot >= 0d)
+			{
+				return ((quaternion1 * invAmount) + (quaternion2 * amount)).Normalized();
+			}
+			return ((quaternion1 * invAmount) - (quaternion2 * amount)).Normalized();
+		}
+
+		public static QuaternionD Slerp(<#=typeName#> quaternion1, <#=typeName#> quaternion2, <#=b.type#> amount) =>
+			SlerpUnclamped(quaternion1, quaternion2, Math.Clamp(amount, 0<#=b.valueEnding#>, 1<#=b.valueEnding#>));
+		public static QuaternionD SlerpUnclamped(<#=typeName#> quaternion1, <#=typeName#> quaternion2, <#=b.type#> amount)
+		{
+			<#=b.type#> dot = Dot(quaternion1, quaternion2);
+			<#=b.type#> dotSign = <#=math["Sign"]#>(dot);
+			dot = <#=math["Abs"]#>(dot);
+			<#=b.type#> dotAcos = <#=math["Acos"]#>(dot);
+			<#=b.type#> dotAcosSin = <#=math["Sin"]#>(dotAcos);
+			<#=b.type#> scale1 = <#=math["Sin"]#>((1<#=b.valueEnding#> - amount) * dotAcos) / dotAcosSin;
+			<#=b.type#> scale2 = <#=math["Sin"]#>(amount * dotAcos) / dotAcosSin;
+			scale2 = scale2 * dotSign;
+			return ((quaternion1 * scale1) + (quaternion2 * scale2));//.Normalized();
+		}
+	}
+}
