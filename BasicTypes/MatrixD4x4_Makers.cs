@@ -5,15 +5,15 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DoubleEngine
+namespace VectorCore
 {
     public readonly partial struct MatrixD4x4
     {
-#if TESTING
-        //[Obsolete("not tested")]
+
+        //[Obsolete("for tests only")]
         public static MatrixD4x4 TESTING_FromTRS_Full_Slow(Vec3D translation, QuaternionD rotation, Vec3D scale) =>
             MatrixD4x4.FromTranslation(translation) * MatrixD4x4.FromRotation(rotation) * MatrixD4x4.FromScale(scale);
-#endif
+
         public static MatrixD4x4 FromOperationRotateThenTranslate(QuaternionD rotation, Vec3D transform) =>
             MatrixD4x4.FromRotation(rotation).WithReplacedTranslation(transform);
         public static MatrixD4x4 FromOperationScaleThenRotateThenTranslate(Vec3D scale, QuaternionD rotation, Vec3D transform) =>

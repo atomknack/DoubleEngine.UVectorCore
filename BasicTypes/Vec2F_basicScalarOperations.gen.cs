@@ -8,7 +8,7 @@
 using System;
 using System.Runtime.CompilerServices;
 
-namespace DoubleEngine
+namespace VectorCore
 {
 
 public readonly partial struct Vec2F

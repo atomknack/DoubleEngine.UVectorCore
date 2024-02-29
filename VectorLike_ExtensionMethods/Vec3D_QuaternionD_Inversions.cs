@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DoubleEngine;
+namespace VectorCore;
 
 public static partial class VectorUtil
 {

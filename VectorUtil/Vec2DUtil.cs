@@ -5,7 +5,7 @@ using System.Linq;
 
 //using static MeshUtil;
 
-namespace DoubleEngine;
+namespace VectorCore;
 
 
 

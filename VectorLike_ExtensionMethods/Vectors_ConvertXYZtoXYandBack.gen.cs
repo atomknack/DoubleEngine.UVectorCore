@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
-namespace DoubleEngine
+namespace VectorCore
 {
     public static partial class VectorLike
     {

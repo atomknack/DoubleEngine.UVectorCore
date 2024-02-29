@@ -2,7 +2,7 @@ using CollectionLike;
 using Newtonsoft.Json;
 using System;
 
-namespace DoubleEngine
+namespace VectorCore
 {
     public readonly partial struct Vec3I
     {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DoubleEngine
+namespace VectorCore
 {
 	public readonly partial struct MatrixD4x4
 	{

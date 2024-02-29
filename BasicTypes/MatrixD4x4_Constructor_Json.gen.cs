@@ -6,7 +6,7 @@
 //----------------------------------------------------------------------------------------
 using Newtonsoft.Json;
 
-namespace DoubleEngine
+namespace VectorCore
 {
 	[System.Serializable]	
     public readonly partial struct MatrixD4x4

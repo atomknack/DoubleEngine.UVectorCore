@@ -1,6 +1,6 @@
 using System;
 
-namespace DoubleEngine
+namespace VectorCore
 {
     public readonly partial struct QuaternionD
     {

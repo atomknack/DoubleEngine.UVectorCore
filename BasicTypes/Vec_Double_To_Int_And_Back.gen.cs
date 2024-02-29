@@ -5,7 +5,7 @@
 //----------------------------------------------------------------------------------------
 using System;
 
-namespace DoubleEngine
+namespace VectorCore
 {
     public readonly partial struct Vec2D : IConvertibleToOut<Vec2I>
     {

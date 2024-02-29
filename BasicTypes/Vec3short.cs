@@ -8,7 +8,7 @@ using System;
 using System.Runtime.CompilerServices;
 using Newtonsoft.Json;
 
-namespace DoubleEngine
+namespace VectorCore
 {
     public readonly partial struct Vec3short : IFormattable
     {

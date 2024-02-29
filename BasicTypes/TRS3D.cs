@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DoubleEngine;
+namespace VectorCore;
 
 public readonly struct TRS3D : IFormattable, IEquatable<TRS3D>
 {

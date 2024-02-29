@@ -2,7 +2,7 @@ using System;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 
-namespace DoubleEngine
+namespace VectorCore
 {
     public readonly partial struct Vec3D
     {

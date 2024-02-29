@@ -6,7 +6,7 @@
 //----------------------------------------------------------------------------------------
 using System;
 
-namespace DoubleEngine
+namespace VectorCore
 {
     public readonly partial struct Vec3short : IEquatable<Vec3short>
     {
